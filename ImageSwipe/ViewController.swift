@@ -10,8 +10,8 @@ import UIKit
 
 class ViewController: UIViewController, UIScrollViewDelegate {
     
-    let imageArray: [UIImage] = (1...5).map { UIImage(named: "image\($0)")! }
-    var counter = 1
+    var imageArray: [UIImage] = (0...4).map { UIImage(named: "image\($0)")! }
+    var counter = 0
     let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.isPagingEnabled = true
@@ -25,27 +25,34 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         super.viewDidLoad()
         
         self.view.addSubview(self.scrollView)
+        imageArray.append(UIImage(named: "image0")!)
+
         setupImages(imageArray)
-        let timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
-//        self.scrollToPage(page: 2, animated: true)
+        self.scrollView.delegate = self
+        let timer = Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
     }
-    // must be internal or public.
+
     @objc func update() {
-        UIView.animate(withDuration: 1.0) {
+//        UIView.animate(withDuration: 1.0) {
+            print("inside animate - \(self.counter)")
+            self.counter += 1
             self.scrollView.contentOffset.x = self.scrollView.frame.width * CGFloat(self.counter)
-        }
-        print("Done")
+            print("animate - \(self.counter)")
+//        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("inside scrolldViewDidScroll - \(counter)")
         if counter == imageArray.count {
+            
+//                let rect = CGRect(x: 818, y: 0, width: 0, height: 0)
+//                self.scrollView.scrollRectToVisible(rect, animated: false)
+            self.scrollView.contentOffset.x = self.scrollView.frame.width * CGFloat(1)
             counter = 0
-        } else {
-            counter += 1
+            print("scroll - \(self.counter)")
         }
     }
-    
-    func scrollToPage(page: Int, animated: Bool) {
-        
-    }
-    
+
     func setupImages(_ images: [UIImage]) {
         for i in 0..<images.count {
             let imageView = UIImageView()
